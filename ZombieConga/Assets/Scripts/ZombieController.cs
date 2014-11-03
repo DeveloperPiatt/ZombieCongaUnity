@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ZombieController : MonoBehaviour {
 
 	public float moveSpeed;
 	public float turnSpeed;
+
 	private Vector3 moveDirection;
+	private List<Transform> congaLine = new List<Transform> ();
 
 	[SerializeField]
 	private PolygonCollider2D[] colliders;
@@ -46,7 +49,19 @@ public class ZombieController : MonoBehaviour {
 
 	void OnTriggerEnter2D (Collider2D other) 
 	{
-		Debug.Log ("Hit " + other.gameObject);
+		//Debug.Log ("Hit " + other.gameObject.tag);
+
+		if (other.CompareTag ("Cat")) {
+			//Debug.Log ("Ooops. Stepped on a cat.");
+			Transform followTarget = congaLine.Count == 0 ? transform : congaLine[congaLine.Count-1];
+
+			other.GetComponent<CatController>().JoinConga(followTarget, moveSpeed, turnSpeed);
+			congaLine.Add (other.transform);
+		} else if (other.CompareTag ("Enemy")) {
+			//Debug.Log("Pardon me, ma'am.");	
+		}
+
+
 	}
 
 	// Use this for initialization
